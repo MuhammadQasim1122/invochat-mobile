@@ -167,12 +167,18 @@ const SSO = ({
             />
         );
     } else {
-        ssoComponent = (
-            <SSOWithRedirectURL
+        // ssoComponent = (
+        //     <SSOWithRedirectURL
+        //         {...props}
+        //         serverUrl={serverUrl!}
+        //     />
+        // );
+        <SSOWithWebView
                 {...props}
+                completeUrlPath={completeUrlPath}
                 serverUrl={serverUrl!}
+                ssoType={ssoType}
             />
-        );
     }
 
     return (

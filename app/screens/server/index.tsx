@@ -304,7 +304,7 @@ const Server = ({
             style={styles.flex}
             testID='server.screen'
         >
-            <Background theme={theme}/>
+            {/* <Background theme={theme}/> */}
             <AnimatedSafeArea
                 key={'server_content'}
                 style={[styles.flex, transform]}
