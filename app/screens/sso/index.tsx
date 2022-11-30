@@ -173,17 +173,18 @@ const SSO = ({
         //         serverUrl={serverUrl!}
         //     />
         // );
-        <SSOWithWebView
+        ssoComponent = (
+            <SSOWithWebView
                 {...props}
                 completeUrlPath={completeUrlPath}
                 serverUrl={serverUrl!}
                 ssoType={ssoType}
             />
+        );
     }
 
     return (
         <View style={styles.flex}>
-            <Background theme={theme}/>
             <AnimatedSafeArea style={[styles.flex, transform]}>
                 {ssoComponent}
             </AnimatedSafeArea>

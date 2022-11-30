@@ -4,7 +4,7 @@
 import {useManagedConfig} from '@mattermost/react-native-emm';
 import React, {MutableRefObject, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {Keyboard, Platform, TextInput, useWindowDimensions, View} from 'react-native';
+import {Image, ImageSourcePropType, Keyboard, Platform, TextInput, useWindowDimensions, View} from 'react-native';
 import Button from 'react-native-button';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
@@ -19,9 +19,11 @@ import {t} from '@i18n';
 import {goToScreen, loginAnimationOptions, resetToHome, resetToTeams} from '@screens/navigation';
 import {buttonBackgroundStyle, buttonTextStyle} from '@utils/buttonStyles';
 import {preventDoubleTap} from '@utils/tap';
-import {makeStyleSheetFromTheme} from '@utils/theme';
+import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 
 import type {LaunchProps} from '@typings/launch';
+import { Screens, Sso } from '@app/constants';
+import CompassIcon from '@app/components/compass_icon';
 
 interface LoginProps extends LaunchProps {
     config: Partial<ClientConfig>;
@@ -31,7 +33,12 @@ interface LoginProps extends LaunchProps {
     serverDisplayName: string;
     theme: Theme;
 }
-
+type SsoInfo = {
+    defaultMessage: string;
+    id: string;
+    imageSrc?: ImageSourcePropType;
+    compassIcon?: string;
+};
 export const MFA_EXPECTED_ERRORS = ['mfa.validate_token.authenticate.app_error', 'ent.mfa.validate_token.authenticate.app_error'];
 
 const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
@@ -131,6 +138,18 @@ const LoginForm = ({config, extra, keyboardAwareRef, numberSSOs, serverDisplayNa
             goToHome(result.time || 0, result.error as never);
         }
     };
+
+    const googleSignIn = async () => {
+            const screen = 'SSO';
+            const title = 'Google Sign In';
+            goToScreen(screen, title, {
+                ssoType: Sso.GOOGLE,
+                serverUrl: serverUrl,
+                theme: theme,
+                config: config,
+                license: license
+            });
+    }
 
     const goToHome = (time: number, loginError?: never) => {
         const hasError = launchError || Boolean(loginError);
@@ -322,6 +341,47 @@ const LoginForm = ({config, extra, keyboardAwareRef, numberSSOs, serverDisplayNa
             </Button>
         );
     }, [buttonDisabled, loginId, password, isLoading, theme]);
+    const styleButtonBackground = buttonBackgroundStyle(theme, 'lg', 'primary');
+    const getSsoButtonOptions = ((ssoType: string): SsoInfo => {
+        const sso: SsoInfo = {} as SsoInfo;
+        switch (ssoType) {
+            case Sso.SAML:
+                sso.defaultMessage = 'SAML';
+                sso.compassIcon = 'lock';
+                sso.id = t('mobile.login_options.saml');
+                break;
+            case Sso.GITLAB:
+                sso.defaultMessage = 'GitLab';
+                sso.imageSrc = require('@assets/images/Icon_Gitlab.png');
+                sso.id = t('mobile.login_options.gitlab');
+                break;
+            case Sso.GOOGLE:
+                sso.defaultMessage = 'Google';
+                sso.imageSrc = require('@assets/images/Icon_Google.png');
+                sso.id = t('mobile.login_options.google');
+                break;
+            case Sso.OFFICE365:
+                sso.defaultMessage = 'Office 365';
+                sso.imageSrc = require('@assets/images/Icon_Office.png');
+                sso.id = t('mobile.login_options.office365');
+                break;
+            case Sso.OPENID:
+                sso.defaultMessage = 'Open ID';
+                sso.id = t('mobile.login_options.openid');
+                break;
+
+            default:
+        }
+        return sso;
+    });
+    const goToSso = preventDoubleTap((ssoType: string) => {
+        goToScreen(Screens.SSO, '', {config, extra, launchError, launchType, license, theme, ssoType, serverDisplayName, serverUrl}, loginAnimationOptions());
+    });
+    const ssoType = Sso.GOOGLE;
+    const {compassIcon, defaultMessage, id, imageSrc} = getSsoButtonOptions(ssoType);
+    const handlePress = () => {
+            goToSso(ssoType);
+    };
 
     return (
         <View style={styles.container}>
@@ -384,8 +444,61 @@ const LoginForm = ({config, extra, keyboardAwareRef, numberSSOs, serverDisplayNa
                 </Button>
             )}
             {renderProceedButton}
+            {
+            // <Button
+            //     testID='login.google.button'
+            //     onPress={async () => googleSignIn()}
+            //     // containerStyle={[styles.loginButton]}
+            // >
+            //     <FormattedText
+            //         id='login.google'
+            //         defaultMessage='Sign In With Google'
+            //     />
+            // </Button>
+            <Button
+            key={ssoType}
+            onPress={handlePress}
+            containerStyle={[styleButtonBackground,styles.button]}
+        >
+            {imageSrc && (
+                <Image
+                    key={'image' + ssoType}
+                    source={imageSrc}
+                    style={styles.logoStyle}
+                />
+            )}
+            {compassIcon &&
+            <CompassIcon
+                name={compassIcon}
+                size={16}
+                color={theme.centerChannelColor}
+            />
+            }
+            <View
+                style={styles.buttonTextContainer}
+            >
+                {
+                    <FormattedText
+                        key={'pretext' + id}
+                        id='mobile.login_options.sso_continue'
+                        style={styles.buttonText}
+                        defaultMessage={'Continue with Google'}
+                        testID={id}
+                    />
+                }
+                <FormattedText
+                    key={ssoType}
+                    id={id}
+                    style={styles.buttonText}
+                    defaultMessage={defaultMessage}
+                    testID={id}
+                />
+            </View>
+        </Button>
+            }
         </View>
     );
 };
+
 
 export default LoginForm;
