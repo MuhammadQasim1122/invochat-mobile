@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React, {useCallback, useMemo} from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 
 import {switchToGlobalThreads} from '@actions/local/thread';
 import Badge from '@components/badge';
@@ -10,7 +10,6 @@ import {
     getStyleSheet as getChannelItemStyleSheet,
     textStyle as channelItemTextStyle,
 } from '@components/channel_item/channel_item';
-import CompassIcon from '@components/compass_icon';
 import FormattedText from '@components/formatted_text';
 import {useServerUrl} from '@context/server';
 import {useTheme} from '@context/theme';
@@ -107,12 +106,13 @@ const ThreadsButton = ({currentChannelId, groupUnreadsSeparately, isInfo, onlyUn
             onPress={handlePress}
             testID='channel_list.threads.button'
         >
+            <Text style={{color: changeOpacity(theme.sidebarText, 0.48),marginLeft:10, marginBottom:10}}>Main Menu</Text>
             <View style={customStyles.baseContainer}>
                 <View style={containerStyle}>
-                    <CompassIcon
-                        name='message-text-outline'
-                        style={iconStyle}
-                    />
+                    <Image 
+                            source={require('@assets/images/Chat.png')}
+                            style={{tintColor: changeOpacity(theme.sidebarText, 1)}}
+                        />
                     <FormattedText
                         id='threads'
                         defaultMessage='Threads'

@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React, {useEffect, useMemo, useRef} from 'react';
-import {Platform, useWindowDimensions, View} from 'react-native';
+import {Image, Platform, useWindowDimensions, View} from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Navigation} from 'react-native-navigation';
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
@@ -12,7 +12,6 @@ import FormattedText from '@components/formatted_text';
 import {Screens} from '@constants';
 import {useIsTablet} from '@hooks/device';
 import NetworkManager from '@managers/network_manager';
-import Background from '@screens/background';
 import {dismissModal, goToScreen, loginAnimationOptions} from '@screens/navigation';
 import {preventDoubleTap} from '@utils/tap';
 import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
@@ -188,8 +187,11 @@ const LoginOptions = ({
             style={styles.flex}
             testID='login.screen'
         >
-            <Background theme={theme}/>
             <AnimatedSafeArea style={[styles.container, transform]}>
+            {<Image
+                            source={require('@assets/images/logo.png')}
+                            style={{height: 35, resizeMode: 'contain', marginTop: 40, marginLeft:50}}
+                        />}
                 <KeyboardAwareScrollView
                     bounces={true}
                     contentContainerStyle={[styles.innerContainer, additionalContainerStyle]}

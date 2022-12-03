@@ -4,14 +4,15 @@
 import {withDatabase} from '@nozbe/watermelondb/DatabaseProvider';
 import withObservables from '@nozbe/with-observables';
 import React from 'react';
-import {View} from 'react-native';
+import {Image, View} from 'react-native';
 
-import ProfilePicture from '@components/profile_picture';
+// import ProfilePicture from '@components/profile_picture';
 import {observeCurrentUser} from '@queries/servers/user';
-import {makeStyleSheetFromTheme} from '@utils/theme';
+import {changeOpacity, makeStyleSheetFromTheme} from '@utils/theme';
 
 import type {WithDatabaseArgs} from '@typings/database/database';
 import type UserModel from '@typings/database/models/servers/user';
+import { BOTTOM_TAB_ICON_SIZE } from '@app/constants/view';
 
 type Props = {
     currentUser: UserModel;
@@ -19,24 +20,15 @@ type Props = {
     theme: Theme;
 }
 
-const getStyleSheet = makeStyleSheetFromTheme((theme: Theme) => ({
-    selected: {
-        borderWidth: 2,
-        borderColor: theme.buttonBg,
-        borderRadius: 20,
-    },
-}));
 
 const Account = ({currentUser, isFocused, theme}: Props) => {
-    const style = getStyleSheet(theme);
 
     return (
-        <View style={isFocused ? style.selected : undefined}>
-            <ProfilePicture
-                author={currentUser}
-                showStatus={false}
-                size={28}
-            />
+        <View>
+            {<Image
+                            source={require('@assets/images/profile.png')}
+                            style={{height: BOTTOM_TAB_ICON_SIZE , resizeMode: 'contain', tintColor: (isFocused ? theme.buttonBg : changeOpacity(theme.centerChannelColor, 0.48))}}
+                        />}
         </View>
     );
 };

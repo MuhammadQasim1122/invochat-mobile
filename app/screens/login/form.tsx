@@ -138,19 +138,7 @@ const LoginForm = ({config, extra, keyboardAwareRef, numberSSOs, serverDisplayNa
             goToHome(result.time || 0, result.error as never);
         }
     };
-
-    const googleSignIn = async () => {
-            const screen = 'SSO';
-            const title = 'Google Sign In';
-            goToScreen(screen, title, {
-                ssoType: Sso.GOOGLE,
-                serverUrl: serverUrl,
-                theme: theme,
-                config: config,
-                license: license
-            });
-    }
-
+    
     const goToHome = (time: number, loginError?: never) => {
         const hasError = launchError || Boolean(loginError);
         resetToHome({extra, launchError: hasError, launchType, serverUrl, time});
@@ -445,20 +433,10 @@ const LoginForm = ({config, extra, keyboardAwareRef, numberSSOs, serverDisplayNa
             )}
             {renderProceedButton}
             {
-            // <Button
-            //     testID='login.google.button'
-            //     onPress={async () => googleSignIn()}
-            //     // containerStyle={[styles.loginButton]}
-            // >
-            //     <FormattedText
-            //         id='login.google'
-            //         defaultMessage='Sign In With Google'
-            //     />
-            // </Button>
             <Button
             key={ssoType}
             onPress={handlePress}
-            containerStyle={[styleButtonBackground,styles.button]}
+            containerStyle={[styleButtonBackground, styleButtonBackground ,styles.button, {marginTop: 10}]}
         >
             {imageSrc && (
                 <Image

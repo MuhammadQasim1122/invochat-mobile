@@ -2,11 +2,10 @@
 // See LICENSE.txt for license information.
 
 import React, {useEffect, useState} from 'react';
-import {Platform, StyleSheet, View} from 'react-native';
+import {Image, Platform, StyleSheet, View} from 'react-native';
 import {Notifications} from 'react-native-notifications';
 
 import Badge from '@components/badge';
-import CompassIcon from '@components/compass_icon';
 import {BOTTOM_TAB_ICON_SIZE} from '@constants/view';
 import {subscribeAllServers} from '@database/subscription/servers';
 import {subscribeUnreadAndMentionsByServer, UnreadObserverArgs} from '@database/subscription/unreads';
@@ -133,11 +132,10 @@ const Home = ({isFocused, theme}: Props) => {
 
     return (
         <View>
-            <CompassIcon
-                size={BOTTOM_TAB_ICON_SIZE}
-                name='home-variant-outline'
-                color={isFocused ? theme.buttonBg : changeOpacity(theme.centerChannelColor, 0.48)}
-            />
+            {<Image
+                            source={require('@assets/images/home.png')}
+                            style={{height: BOTTOM_TAB_ICON_SIZE , resizeMode: 'contain', tintColor: (isFocused ? theme.buttonBg : changeOpacity(theme.centerChannelColor, 0.48))}}
+                        />}
             <Badge
                 backgroundColor={theme.buttonBg}
                 borderColor={theme.centerChannelBg}

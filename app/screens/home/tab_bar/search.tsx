@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
-import {View} from 'react-native';
+import {Image, View} from 'react-native';
 
 import CompassIcon from '@components/compass_icon';
 import {BOTTOM_TAB_ICON_SIZE} from '@constants/view';
@@ -16,11 +16,10 @@ type Props = {
 const Search = ({isFocused, theme}: Props) => {
     return (
         <View>
-            <CompassIcon
-                size={BOTTOM_TAB_ICON_SIZE}
-                name='magnify'
-                color={isFocused ? theme.buttonBg : changeOpacity(theme.centerChannelColor, 0.48)}
-            />
+            {<Image
+                            source={require('@assets/images/search.png')}
+                            style={{height: BOTTOM_TAB_ICON_SIZE , resizeMode: 'contain', tintColor: (isFocused ? theme.buttonBg : changeOpacity(theme.centerChannelColor, 0.48))}}
+                        />}
         </View>
     );
 };
